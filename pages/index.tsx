@@ -8,28 +8,39 @@ import SearchBar from "../components/SearchBar";
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchedToolName, setSearchedToolName] = useState<string | null>(null);
 
   const allTools = useMemo(() => getAllTools(), []);
 
-  const handleSearch = useCallback((query: string) => {
-    setIsSearching(true);
-    // 검색 실행 시 호출할 코드
-    console.log("Gemini 검색 실행:", query);
-    setIsSearching(false);
-  }, []);
+  const handleSearch = useCallback((toolName: string) => {
+    setSearchedToolName(toolName);
+    // 검색된 도구의 카테고리를 찾아 자동으로 선택
+    const tool = allTools.find(t => t.name.toLowerCase() === toolName.toLowerCase());
+    if (tool) {
+      setSelectedCategory(tool.category);
+    }
+  }, [allTools]);
 
   const filteredTools: Tool[] = useMemo(() => {
-    if (searchQuery.trim() !== "") {
-      return allTools.filter((tool) =>
-        `${tool.name} ${tool.description} ${tool.tags?.join(" ")}`.toLowerCase().includes(searchQuery.toLowerCase())
+    if (searchedToolName) {
+      // 검색된 도구명과 일치하는 도구만 필터링
+      const searchResults = allTools.filter(tool => 
+        tool.name.toLowerCase() === searchedToolName.toLowerCase()
       );
+      return searchResults;
     } else if (selectedCategory && selectedCategory !== '전체') {
       return allTools.filter(tool => tool.category === selectedCategory);
     } else {
       return allTools;
     }
-  }, [searchQuery, selectedCategory, allTools]);
+  }, [searchedToolName, selectedCategory, allTools]);
+
+  const handleCategorySelect = useCallback((category: string) => {
+    setSelectedCategory(category);
+    // 카테고리 변경 시 검색 상태 초기화
+    setSearchedToolName(null);
+    setSearchQuery("");
+  }, []);
 
   return (
     <>
@@ -57,13 +68,13 @@ export default function Home() {
           
           <CategoryButtons
             selected={selectedCategory}
-            onSelect={setSelectedCategory}
-            disabled={isSearching}
+            onSelect={handleCategorySelect}
+            disabled={false}
           />
 
           <ToolGrid 
             tools={filteredTools} 
-            showMessage={searchQuery.trim() !== "" || selectedCategory !== null}
+            showMessage={searchedToolName !== null && filteredTools.length === 0}
             selectedCategory={selectedCategory}
           />
         </div>

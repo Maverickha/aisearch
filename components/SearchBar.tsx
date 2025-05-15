@@ -9,7 +9,6 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState('');
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   const handleSearch = useCallback(async () => {
@@ -18,38 +17,28 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
     setIsLoading(true);
     try {
       const response = await fetchGeminiResponse(value);
-      // 검색 결과가 있고, 에러 메시지가 아닌 경우에만 결과를 표시
       if (response && !response.includes('죄송합니다')) {
-        setResult(response);
-      } else {
-        setResult('죄송합니다. 아직 구현중인 기능으로, 오류가 발생할 수 있습니다.');
+        const toolName = extractToolName(response);
+        if (toolName) {
+          onSearch(toolName);
+        }
       }
-      
-      // 검색 결과에서 키워드 추출 및 검색 실행
-      const keywords = extractKeywords(response);
-      onSearch(keywords);
     } catch (error) {
       console.error('검색 오류:', error);
-      setResult('죄송합니다. 아직 구현중인 기능으로, 오류가 발생할 수 있습니다.');
     } finally {
       setIsLoading(false);
     }
   }, [value, onSearch]);
 
-  const extractKeywords = (response: string): string => {
-    // 응답에서 도구명 추출
+  const extractToolName = (response: string): string | null => {
     const toolNameMatch = response.match(/🎯 추천 도구:\s*\n([^\n]+)/);
-    if (toolNameMatch && toolNameMatch[1]) {
-      return toolNameMatch[1].trim();
-    }
-    return value; // 키워드 추출 실패 시 원본 검색어 사용
+    return toolNameMatch ? toolNameMatch[1].trim() : null;
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     onChange(newValue);
 
-    // 디바운스 처리
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
@@ -72,7 +61,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
           type="text"
           value={value}
           onChange={handleInputChange}
-          placeholder=""
+          placeholder="어떤 AI 도구를 찾으시나요?"
           className="w-full p-4 pr-24 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
         />
         <button
@@ -93,17 +82,6 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
           )}
         </button>
       </form>
-      
-      {result && !result.includes('죄송합니다') && (
-        <div className="mt-4 p-6 bg-white rounded-lg shadow-md border border-gray-100 animate-fadeIn">
-          <p className="text-gray-700 whitespace-pre-line leading-relaxed">{result}</p>
-        </div>
-      )}
-      {result && result.includes('죄송합니다') && (
-        <div className="mt-4 text-center text-red-500">
-          <p>{result}</p>
-        </div>
-      )}
     </div>
   );
 };
