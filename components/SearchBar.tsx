@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { fetchGeminiResponse } from '../utils/geminiSearch';
-import { trackSearch } from '../utils/analytics';
+import { trackSearch, trackError } from '../utils/analytics';
 
 interface SearchBarProps {
   value: string;

@@ -14,7 +14,11 @@ function MyApp({ Component, pageProps }: AppProps) {
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-PNKEKCZENF');
+            gtag('config', 'G-PNKEKCZENF', {
+              send_page_view: true,
+              cookie_flags: 'SameSite=None;Secure',
+              cookie_domain: 'auto'
+            });
           `
         }} />
       </Head>
