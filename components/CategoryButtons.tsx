@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { trackCategorySelect } from '../utils/analytics';
+import { scrollToSectionTop } from '../utils/scroll';
 
 interface CategoryButtonsProps {
   selected: string;
@@ -41,31 +42,19 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ selected, onSelect, d
   const handleCategoryClick = (id: string) => {
     onSelect(id);
     trackCategorySelect(id);
-    
-    // 전체 카테고리가 아닌 경우에만 해당 섹션으로 스크롤
+
+    // 먼저 최상단으로 스크롤
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     if (id !== '전체') {
-      // 현재 스크롤 위치 저장
-      const currentScroll = window.pageYOffset;
-      
+      // DOM 렌더링 완료 후 섹션으로 스크롤
       requestAnimationFrame(() => {
-        const section = document.getElementById(`category-${id}`);
-        if (section) {
-          const sectionTop = section.getBoundingClientRect().top;
-          const headerOffset = 100; // 헤더 높이와 여유 공간
-          
-          // 섹션이 화면 상단에서 너무 멀리 있는 경우에만 스크롤
-          if (sectionTop < 0 || sectionTop > window.innerHeight - headerOffset) {
-            const targetScroll = currentScroll + sectionTop - headerOffset;
-            window.scrollTo({
-              top: Math.max(0, targetScroll), // 음수가 되지 않도록 보장
-              behavior: 'smooth'
-            });
-          }
-        }
+        setTimeout(() => {
+          const sectionId = `category-${id}`;
+          console.log('Scrolling to section:', sectionId);
+          scrollToSectionTop(sectionId);
+        }, 100);
       });
-    } else {
-      // 전체 카테고리 선택 시 최상단으로 부드럽게 스크롤
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
