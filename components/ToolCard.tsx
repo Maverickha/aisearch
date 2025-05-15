@@ -168,17 +168,6 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
           )}
         </div>
       )}
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {tool.tags?.map((tag) => (
-          <span
-            key={tag}
-            className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
     </div>
   );
 };

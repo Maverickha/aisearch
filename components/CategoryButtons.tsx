@@ -40,17 +40,19 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ selected, onSelect, d
   const handleCategoryClick = (id: string) => {
     onSelect(id);
     
-    if (id === '전체') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
+    // 모든 카테고리 선택 시 최상단으로 스크롤
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // 해당 섹션으로 스크롤
-    const section = document.getElementById(`category-${id}`);
-    if (section) {
-      const yOffset = -100; // 상단 여백 조정
-      const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+    // 전체 카테고리가 아닌 경우에만 해당 섹션으로 스크롤
+    if (id !== '전체') {
+      setTimeout(() => {
+        const section = document.getElementById(`category-${id}`);
+        if (section) {
+          const yOffset = -100;
+          const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 100);
     }
   };
 
