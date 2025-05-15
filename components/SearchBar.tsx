@@ -4,9 +4,10 @@ import { fetchGeminiResponse } from '../utils/geminiSearch';
 interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
+  onSearch: (query: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState('');
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
@@ -16,15 +17,29 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
     
     setIsLoading(true);
     try {
+      // Gemini API를 통한 자연어 검색
       const response = await fetchGeminiResponse(value);
       setResult(response);
+      
+      // 검색 결과에서 키워드 추출 및 검색 실행
+      const keywords = extractKeywords(response);
+      onSearch(keywords);
     } catch (error) {
       console.error('검색 오류:', error);
       setResult('검색 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
-  }, [value]);
+  }, [value, onSearch]);
+
+  const extractKeywords = (response: string): string => {
+    // 응답에서 도구명 추출
+    const toolNameMatch = response.match(/🎯 추천 도구:\s*\n([^\n]+)/);
+    if (toolNameMatch && toolNameMatch[1]) {
+      return toolNameMatch[1].trim();
+    }
+    return value; // 키워드 추출 실패 시 원본 검색어 사용
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -41,9 +56,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
     }, 500);
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSearch();
+  };
+
   return (
     <div className="w-full max-w-2xl mx-auto mb-8">
-      <div className="relative">
+      <form onSubmit={handleSubmit} className="relative">
         <input
           type="text"
           value={value}
@@ -68,7 +88,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange }) => {
             '검색'
           )}
         </button>
-      </div>
+      </form>
       
       {result && (
         <div className="mt-4 p-6 bg-white rounded-lg shadow-md border border-gray-100 animate-fadeIn">

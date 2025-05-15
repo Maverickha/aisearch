@@ -2,17 +2,19 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Tool } from '../data/categories';
 import { fallbackLogos } from '../data/logos';
 import Image from 'next/image';
+import { fetchPricing } from '../utils/pricing';
 
-interface PriceInfo {
-  plus: {
+interface PricingInfo {
+  individual: {
+    name: string;
     usd: string;
     krw: string;
   };
   team: {
+    name: string;
     usd: string;
     krw: string;
   };
-  error?: string;
 }
 
 interface ToolCardProps {
@@ -23,7 +25,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   const [logoSrc, setLogoSrc] = useState<string>('/default-logo.png');
   const [hasError, setHasError] = useState<boolean>(false);
   const [loadAttempts, setLoadAttempts] = useState<number>(0);
-  const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(null);
+  const [priceInfo, setPriceInfo] = useState<PricingInfo | null>(null);
 
   const fallbackKey = useMemo(() => {
     const lowerName = tool.name.toLowerCase();
@@ -80,24 +82,30 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
 
   useEffect(() => {
     const loadPricing = async () => {
-      if (tool.hasPricing) {
+      if (tool.hasPricing && tool.url) {
         try {
-          const response = await fetch('/api/pricing/chatgpt');
-          const data = await response.json();
+          const data = await fetchPricing(tool.url);
           setPriceInfo(data);
         } catch (error) {
           console.error('가격 정보 로딩 중 오류:', error);
           setPriceInfo({
-            plus: { usd: '가격 정보 없음', krw: '가격 정보 없음' },
-            team: { usd: '가격 정보 없음', krw: '가격 정보 없음' },
-            error: '가격 정보를 가져오는 중 오류가 발생했습니다.'
+            individual: {
+              name: 'Pro',
+              usd: '가격 정보 없음',
+              krw: '가격 정보 없음'
+            },
+            team: {
+              name: 'Team',
+              usd: '가격 정보 없음',
+              krw: '가격 정보 없음'
+            }
           });
         }
       }
     };
 
     loadPricing();
-  }, [tool.hasPricing]);
+  }, [tool.hasPricing, tool.url]);
 
   const handleCardClick = () => {
     window.open(tool.url, '_blank', 'noopener,noreferrer');
@@ -148,24 +156,20 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
       {tool.hasPricing && priceInfo && (
         <div className="mt-6">
           <div className="flex gap-4 justify-between">
-            {/* Plus 요금제 */}
+            {/* 개인 요금제 */}
             <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-4 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
-              <p className="font-semibold text-sm mb-2">Plus</p>
-              <p className="text-sm text-gray-600">{priceInfo.plus.usd}</p>
-              <p className="text-blue-600 font-bold text-sm mt-1">{priceInfo.plus.krw}</p>
+              <p className="font-semibold text-sm mb-2">{priceInfo.individual.name}</p>
+              <p className="text-sm text-gray-600">{priceInfo.individual.usd}</p>
+              <p className="text-blue-600 font-bold text-sm mt-1">{priceInfo.individual.krw}</p>
             </div>
 
             {/* Team 요금제 */}
             <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-4 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
-              <p className="font-semibold text-sm mb-2">Team</p>
+              <p className="font-semibold text-sm mb-2">{priceInfo.team.name}</p>
               <p className="text-sm text-gray-600">{priceInfo.team.usd}</p>
               <p className="text-blue-600 font-bold text-sm mt-1">{priceInfo.team.krw}</p>
             </div>
           </div>
-
-          {priceInfo.error && (
-            <p className="text-xs text-red-500 w-full mt-2 text-center">{priceInfo.error}</p>
-          )}
         </div>
       )}
     </div>
