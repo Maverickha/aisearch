@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import Head from 'next/head';
 import { Tool, getAllTools } from "../data/categories";
 import ToolGrid from "../components/ToolGrid";
@@ -8,8 +8,16 @@ import SearchBar from "../components/SearchBar";
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
   const allTools = useMemo(() => getAllTools(), []);
+
+  const handleSearch = useCallback((query: string) => {
+    setIsSearching(true);
+    // 검색 실행 시 호출할 코드
+    console.log("Gemini 검색 실행:", query);
+    setIsSearching(false);
+  }, []);
 
   const filteredTools: Tool[] = useMemo(() => {
     if (searchQuery.trim() !== "") {
@@ -38,12 +46,16 @@ export default function Home() {
             AI 툴, 한눈에 보고 편하게 결정하세요
           </p>
 
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            onSearch={handleSearch}
+          />
           
           <CategoryButtons
             selected={selectedCategory}
             onSelect={setSelectedCategory}
-            disabled={searchQuery.trim() !== ""}
+            disabled={isSearching}
           />
 
           <ToolGrid 
