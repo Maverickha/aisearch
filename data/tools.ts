@@ -43,7 +43,8 @@ export const categories: Category[] = [
         recommendedUse: "디자인, 아트워크, 시각적 콘텐츠 제작",
         officialUrl: "https://www.midjourney.com",
         sourceUrl: "https://www.reddit.com/r/AIToolTesting/comments/1ji4ihm",
-        tags: ["디자인"]
+        tags: ["디자인"],
+        hasPricing: true
       }
     ]
   },
@@ -58,7 +59,8 @@ export const categories: Category[] = [
         recommendedUse: "자동완성, 코드 리뷰 보조, 반복 코드 생략",
         officialUrl: "https://github.com/features/copilot",
         sourceUrl: "https://github.blog/2024-03-15-copilot-now-used-by-1500000-developers/",
-        tags: ["개발"]
+        tags: ["개발"],
+        hasPricing: true
       }
     ]
   },
@@ -73,7 +75,8 @@ export const categories: Category[] = [
         recommendedUse: "영상 편집, 특수 효과, 텍스트-투-비디오",
         officialUrl: "https://runwayml.com",
         sourceUrl: "https://www.futuretools.io/tools/runway",
-        tags: ["영상"]
+        tags: ["영상"],
+        hasPricing: true
       }
     ]
   },
@@ -88,7 +91,8 @@ export const categories: Category[] = [
         recommendedUse: "메모 자동화, 문서 요약, 태스크 정리",
         officialUrl: "https://www.notion.so/product/ai",
         sourceUrl: "https://www.producthunt.com/products/notion-ai",
-        tags: ["생산성"]
+        tags: ["생산성"],
+        hasPricing: true
       }
     ]
   }
