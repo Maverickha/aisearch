@@ -45,6 +45,9 @@ export default function Home() {
           <p className="text-center text-gray-500 mb-6">
             AI 툴, 한눈에 보고 편하게 결정하세요
           </p>
+          <p className="text-center text-gray-400 text-sm mb-8">
+            (현재 베타 테스트중입니다. 플랜과 금액은 실제 서비스와 다릅니다.)
+          </p>
 
           <SearchBar
             value={searchQuery}

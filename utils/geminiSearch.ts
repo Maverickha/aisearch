@@ -27,17 +27,23 @@ export async function fetchGeminiResponse(prompt: string): Promise<string> {
 `;
 
     const res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText?key=' +
+      'https://generativelanguage.googleapis.com/v1/models/gemini-pro/generateContent?key=' +
         GEMINI_API_KEY,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          prompt: { text: enhancedPrompt },
-          temperature: 0.7,
-          maxTokens: 500,
-          topK: 40,
-          topP: 0.95,
+          contents: [{
+            parts: [{
+              text: enhancedPrompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 500,
+            topP: 0.95,
+            topK: 40
+          },
           safetySettings: [
             {
               category: "HARM_CATEGORY_DEROGATORY",
@@ -57,14 +63,14 @@ export async function fetchGeminiResponse(prompt: string): Promise<string> {
     }
 
     const data = await res.json();
-    const output = data?.candidates?.[0]?.output;
+    const output = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!output) {
       throw new Error('응답 데이터가 없습니다.');
     }
 
     return output
-      .replace(/\n\n+/g, '\n\n') // 중복 줄바꿈 제거
+      .replace(/\n\n+/g, '\n\n')
       .trim();
   } catch (error) {
     console.error('Gemini API 오류:', error);

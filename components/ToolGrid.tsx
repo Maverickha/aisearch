@@ -34,8 +34,8 @@ function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProp
             id={`category-${category}`}
             className="scroll-mt-32 px-4 md:px-0"
           >
-            <h3 className="text-xl font-bold mb-6">
-              <span className="mr-2">📌</span>
+            <h3 className="text-xl font-bold mb-6 max-w-2xl mx-auto">
+              {getCategoryEmoji(category)}
               {category}
             </h3>
             <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 max-w-2xl mx-auto">
@@ -56,6 +56,18 @@ function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProp
       ))}
     </div>
   );
+}
+
+function getCategoryEmoji(category: string): string {
+  const emojiMap: Record<string, string> = {
+    '범용': '🤖 ',
+    '글쓰기': '✍️ ',
+    '이미지': '🎨 ',
+    '영상': '🎬 ',
+    '생산성': '⚡ ',
+    '개발': '💻 '
+  };
+  return emojiMap[category] || '🔍 ';
 }
 
 export default React.memo(ToolGrid); 
