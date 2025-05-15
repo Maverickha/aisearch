@@ -28,22 +28,29 @@ function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProp
 
     return (
       <div className="space-y-10 mt-6">
-        {Object.entries(grouped).map(([category, group]) => (
-          <div key={category}>
-            <h3 className="text-lg font-bold mb-4">📌 {category}</h3>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              {group.map((tool) => (
+        {Object.entries(grouped).map(([category, groupTools]) => (
+          <section 
+            key={category} 
+            id={`section-${category}`}
+            className="scroll-mt-24"
+          >
+            <h3 className="text-lg font-bold mb-4 pl-4 md:pl-0">
+              <span className="mr-2">📌</span>
+              {category}
+            </h3>
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 px-4 md:px-0">
+              {groupTools.map((tool) => (
                 <ToolCard key={tool.name} tool={tool} />
               ))}
             </div>
-          </div>
+          </section>
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mt-6">
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 mt-6 px-4 md:px-0">
       {tools.map((tool) => (
         <ToolCard key={tool.name} tool={tool} />
       ))}
@@ -51,4 +58,4 @@ function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProp
   );
 }
 
-export default ToolGrid; 
+export default React.memo(ToolGrid); 
