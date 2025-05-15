@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { fetchGeminiResponse } from '../utils/geminiSearch';
+import { trackSearch } from '../utils/analytics';
 
 interface SearchBarProps {
   value: string;
@@ -20,10 +21,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
         const toolName = extractToolName(response);
         if (toolName) {
           onSearch(toolName);
+          trackSearch(value, 1);
+        } else {
+          trackSearch(value, 0);
         }
+      } else {
+        trackSearch(value, 0);
       }
     } catch (error) {
       console.error('검색 오류:', error);
+      trackSearch(value, 0);
     } finally {
       setIsLoading(false);
     }

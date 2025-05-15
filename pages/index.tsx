@@ -1,9 +1,10 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import Head from 'next/head';
 import { Tool, getAllTools } from "../data/categories";
 import ToolGrid from "../components/ToolGrid";
 import CategoryButtons from "../components/CategoryButtons";
 import SearchBar from "../components/SearchBar";
+import { startTimeTracking, trackTimeSpent, trackScrollDepth } from "../utils/analytics";
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
@@ -11,6 +12,23 @@ export default function Home() {
   const [searchedToolName, setSearchedToolName] = useState<string | null>(null);
 
   const allTools = useMemo(() => getAllTools(), []);
+
+  // 페이지 로드 시 트래킹 시작
+  useEffect(() => {
+    startTimeTracking();
+
+    // 스크롤 이벤트 리스너 등록
+    const handleScroll = () => {
+      requestAnimationFrame(trackScrollDepth);
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    // 페이지 언마운트 시 체류 시간 전송
+    return () => {
+      trackTimeSpent('Home');
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   const handleSearch = useCallback((toolName: string) => {
     setSearchedToolName(toolName);

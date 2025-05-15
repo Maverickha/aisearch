@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { trackCategorySelect } from '../utils/analytics';
 
 interface CategoryButtonsProps {
   selected: string;
@@ -39,6 +40,7 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ selected, onSelect, d
 
   const handleCategoryClick = (id: string) => {
     onSelect(id);
+    trackCategorySelect(id);
     
     // 모든 카테고리 선택 시 최상단으로 스크롤
     window.scrollTo({ top: 0, behavior: 'smooth' });

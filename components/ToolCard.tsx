@@ -3,6 +3,7 @@ import { Tool } from '../data/categories';
 import { fallbackLogos } from '../data/logos';
 import Image from 'next/image';
 import { fetchPricing } from '../utils/pricing';
+import { trackToolClick, trackPricingView } from '../utils/analytics';
 
 interface PricingInfo {
   individual: {
@@ -86,6 +87,9 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
         try {
           const data = await fetchPricing(tool.url);
           setPriceInfo(data);
+          if (data) {
+            trackPricingView(tool.name);
+          }
         } catch (error) {
           console.error('가격 정보 로딩 중 오류:', error);
           setPriceInfo({
@@ -105,9 +109,10 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
     };
 
     loadPricing();
-  }, [tool.hasPricing, tool.url]);
+  }, [tool.hasPricing, tool.url, tool.name]);
 
   const handleCardClick = () => {
+    trackToolClick(tool.name, tool.category);
     window.open(tool.url, '_blank', 'noopener,noreferrer');
   };
 
