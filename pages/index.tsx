@@ -42,7 +42,7 @@ export default function Home() {
       <main className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold mb-4 text-center">AI Tool Finder</h1>
-          <p className="text-center text-gray-500 mb-6">
+          <p className="text-center text-blue-600 font-bold mb-6">
             AI 툴, 한눈에 보고 편하게 결정하세요
           </p>
           <p className="text-center text-gray-400 text-sm mb-8">

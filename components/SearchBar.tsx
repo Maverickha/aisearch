@@ -17,16 +17,20 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
     
     setIsLoading(true);
     try {
-      // Gemini API를 통한 자연어 검색
       const response = await fetchGeminiResponse(value);
-      setResult(response);
+      // 검색 결과가 있고, 에러 메시지가 아닌 경우에만 결과를 표시
+      if (response && !response.includes('죄송합니다')) {
+        setResult(response);
+      } else {
+        setResult('죄송합니다. 아직 구현중인 기능으로, 오류가 발생할 수 있습니다.');
+      }
       
       // 검색 결과에서 키워드 추출 및 검색 실행
       const keywords = extractKeywords(response);
       onSearch(keywords);
     } catch (error) {
       console.error('검색 오류:', error);
-      setResult('검색 중 오류가 발생했습니다.');
+      setResult('죄송합니다. 아직 구현중인 기능으로, 오류가 발생할 수 있습니다.');
     } finally {
       setIsLoading(false);
     }
