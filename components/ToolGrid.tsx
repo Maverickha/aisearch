@@ -27,18 +27,18 @@ function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProp
     });
 
     return (
-      <div className="space-y-10 mt-6">
+      <div className="space-y-12 mt-8">
         {Object.entries(grouped).map(([category, groupTools]) => (
           <section 
             key={category} 
-            id={`section-${category}`}
-            className="scroll-mt-24"
+            id={`category-${category}`}
+            className="scroll-mt-32 px-4 md:px-0"
           >
-            <h3 className="text-lg font-bold mb-4 pl-4 md:pl-0">
+            <h3 className="text-xl font-bold mb-6">
               <span className="mr-2">📌</span>
               {category}
             </h3>
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 px-4 md:px-0">
+            <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 max-w-2xl mx-auto">
               {groupTools.map((tool) => (
                 <ToolCard key={tool.name} tool={tool} />
               ))}
@@ -50,7 +50,7 @@ function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProp
   }
 
   return (
-    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 mt-6 px-4 md:px-0">
+    <div className="grid gap-6 grid-cols-1 lg:grid-cols-2 mt-8 px-4 md:px-0 max-w-2xl mx-auto">
       {tools.map((tool) => (
         <ToolCard key={tool.name} tool={tool} />
       ))}

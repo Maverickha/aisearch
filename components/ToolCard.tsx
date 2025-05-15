@@ -119,7 +119,8 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
   };
 
   return (
-    <div className="p-4 border rounded-xl shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
+    <div 
+      className="p-6 border rounded-xl shadow-sm bg-white hover:shadow-md transition-shadow cursor-pointer"
       onClick={handleCardClick}
       tabIndex={0}
       role="button"
@@ -132,40 +133,33 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
           <Image
             src={logoSrc}
             alt={`${tool.name} 로고`}
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className="object-contain rounded-lg bg-white"
             onError={handleImgError}
           />
         </div>
-        <div className="flex-1">
-          <h2 className="text-lg font-semibold">{tool.name}</h2>
-          <p className="text-sm text-gray-700 line-clamp-2">{tool.description}</p>
+        <div className="flex-1 min-h-[100px]">
+          <h2 className="text-lg font-semibold mb-2">{tool.name}</h2>
+          <p className="text-gray-700 text-sm leading-relaxed">{tool.description}</p>
         </div>
       </div>
 
       {tool.hasPricing && priceInfo && (
-        <div className="mt-4">
-          <div className="flex gap-3 justify-between">
+        <div className="mt-6">
+          <div className="flex gap-4 justify-between">
             {/* Plus 요금제 */}
-            <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-3 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
+            <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-4 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
               <p className="font-semibold text-sm mb-2">Plus</p>
               <p className="text-sm text-gray-600">{priceInfo.plus.usd}</p>
               <p className="text-blue-600 font-bold text-sm mt-1">{priceInfo.plus.krw}</p>
             </div>
 
             {/* Team 요금제 */}
-            <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-3 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
+            <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-4 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
               <p className="font-semibold text-sm mb-2">Team</p>
               <p className="text-sm text-gray-600">{priceInfo.team.usd}</p>
               <p className="text-blue-600 font-bold text-sm mt-1">{priceInfo.team.krw}</p>
-            </div>
-
-            {/* Enterprise 요금제 */}
-            <div className="flex-1 bg-[#E8EBED] rounded-lg shadow-sm p-3 flex flex-col items-center justify-center text-center transition-all hover:shadow-md">
-              <p className="font-semibold text-sm mb-2">Enterprise</p>
-              <p className="text-sm text-gray-500">Contact us</p>
-              <p className="text-xs text-gray-400 mt-1">맞춤형 견적</p>
             </div>
           </div>
 
@@ -174,6 +168,17 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool }) => {
           )}
         </div>
       )}
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {tool.tags?.map((tag) => (
+          <span
+            key={tag}
+            className="px-2 py-1 text-xs font-medium text-gray-600 bg-gray-100 rounded-full"
+          >
+            {tag}
+          </span>
+        ))}
+      </div>
     </div>
   );
 };

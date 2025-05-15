@@ -39,10 +39,16 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ selected, onSelect, d
 
   const handleCategoryClick = (id: string) => {
     onSelect(id);
+    
+    if (id === '전체') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     // 해당 섹션으로 스크롤
-    const section = document.getElementById(`section-${id}`);
+    const section = document.getElementById(`category-${id}`);
     if (section) {
-      const yOffset = -80; // 상단 여백 조정
+      const yOffset = -100; // 상단 여백 조정
       const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
@@ -52,7 +58,7 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ selected, onSelect, d
     <div className="sticky top-0 z-50 bg-white py-4 shadow-sm">
       <div 
         ref={scrollContainerRef}
-        className="flex overflow-x-auto scrollbar-hide gap-2 px-4 md:px-0 md:justify-center max-w-5xl mx-auto"
+        className="flex overflow-x-auto scrollbar-hide gap-2 px-4 md:px-0 md:justify-center max-w-2xl mx-auto"
         style={{
           WebkitOverflowScrolling: 'touch',
           scrollbarWidth: 'none',
@@ -76,8 +82,8 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ selected, onSelect, d
               flex items-center 
               gap-1
               ${selected === id
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow'}
+                ? 'bg-blue-600 text-white shadow-md scale-105'
+                : 'bg-white text-gray-700 hover:bg-gray-100 hover:shadow hover:scale-105'}
               ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
             `}
           >
