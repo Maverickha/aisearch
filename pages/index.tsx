@@ -56,9 +56,10 @@ export default function Home() {
           <p className="text-center text-blue-600 font-bold mb-6">
             AI 툴, 한눈에 보고 편하게 결정하세요
           </p>
-          <p className="text-center text-gray-400 text-sm mb-8">
-            (현재 베타 테스트중입니다. 플랜과 금액은 실제 서비스와 다릅니다.)
-          </p>
+          <div className="text-center text-red-500 text-sm mb-8">
+            <p>현재 베타테스트중입니다.</p>
+            <p>플랜과 금액은 실제 서비스와 다릅니다.</p>
+          </div>
 
           <SearchBar
             value={searchQuery}

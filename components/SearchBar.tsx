@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { fetchGeminiResponse } from '../utils/geminiSearch';
 
 interface SearchBarProps {
@@ -9,7 +9,6 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
 
   const handleSearch = useCallback(async () => {
     if (!value.trim()) return;
@@ -36,17 +35,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    onChange(newValue);
-
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    searchTimeoutRef.current = setTimeout(() => {
-      if (newValue.trim().length >= 2) {
-        handleSearch();
-      }
-    }, 500);
+    onChange(e.target.value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
