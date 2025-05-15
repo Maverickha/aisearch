@@ -68,7 +68,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
           type="text"
           value={value}
           onChange={handleInputChange}
-          placeholder="당신의 상황을 입력하세요 (예: 영상 편집하고 싶어요)"
+          placeholder=""
           className="w-full p-4 pr-24 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
         />
         <button
@@ -90,9 +90,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
         </button>
       </form>
       
-      {result && (
+      {result && !result.includes('죄송합니다') && (
         <div className="mt-4 p-6 bg-white rounded-lg shadow-md border border-gray-100 animate-fadeIn">
           <p className="text-gray-700 whitespace-pre-line leading-relaxed">{result}</p>
+        </div>
+      )}
+      {result && result.includes('죄송합니다') && (
+        <div className="mt-4 text-center text-red-500">
+          <p>{result}</p>
         </div>
       )}
     </div>
