@@ -26,14 +26,14 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>AI 도구 검색</title>
+        <title>AI Tool Finder</title>
         <meta name="description" content="AI 도구를 카테고리별로 검색하고 찾아보세요" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
       </Head>
       <main className="min-h-screen bg-gray-50 p-6">
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-2xl font-bold mb-4 text-center">AI 도구 검색</h1>
+          <h1 className="text-2xl font-bold mb-4 text-center">AI Tool Finder</h1>
           <p className="text-center text-gray-500 mb-6">
             AI 툴, 한눈에 보고 편하게 결정하세요
           </p>
