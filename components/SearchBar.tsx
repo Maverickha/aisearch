@@ -57,7 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch }) => {
           type="text"
           value={value}
           onChange={handleInputChange}
-          placeholder="어떤 AI 도구를 찾으시나요?"
+          placeholder="어떤 일을 하고 싶은가요?"
           className="w-full p-4 pr-24 text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
         />
         <button
