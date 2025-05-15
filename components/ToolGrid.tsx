@@ -9,7 +9,7 @@ interface ToolGridProps {
 }
 
 function ToolGrid({ tools, showMessage = false, selectedCategory }: ToolGridProps) {
-  if (tools.length === 0) {
+  if (tools.length === 0 && showMessage) {
     return (
       <div className="text-center py-8 text-gray-500">
         {showMessage
