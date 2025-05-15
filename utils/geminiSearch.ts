@@ -2,6 +2,22 @@ import { getAllTools, Tool } from '../data/categories';
 
 const GEMINI_API_KEY = 'AIzaSyC1u1ePly2RRt9cIvWYne9Q--whRc2BlkE';
 
+// 도구별 관련 키워드 매핑
+const toolKeywords: Record<string, string[]> = {
+  'ChatGPT': ['gpt', '챗gpt', '챗지피티', '대화', '글쓰기', 'openai'],
+  'Midjourney': ['그림', '웹툰', '일러스트', '이미지', '디자인', '아트', '그리기'],
+  'Leonardo AI': ['그림', '웹툰', '일러스트', '이미지', '디자인', '아트', '그리기', '레오나르도'],
+  'DALL-E': ['그림', '이미지', '디자인', '아트', '달리', '달리이'],
+  'Stable Diffusion': ['그림', '이미지', '디자인', '아트', '스테이블디퓨전'],
+  'Microsoft Copilot': ['엑셀', '워드', '파워포인트', '오피스', '문서', '데이터', '마이크로소프트'],
+  'Claude': ['글쓰기', '대화', '문서', '클로드'],
+  'Gemini': ['구글', '대화', '글쓰기', '제미나이'],
+  'Grammarly': ['영어', '교정', '문법', '그래멀리'],
+  'Jasper': ['블로그', '마케팅', '카피라이팅', '자스퍼'],
+  'Poe': ['대화', 'AI 모음', '포'],
+  'Motion': ['일정', '계획', '시간관리', '모션']
+};
+
 export async function fetchGeminiResponse(userQuery: string): Promise<string> {
   try {
     const allTools = getAllTools();
@@ -9,7 +25,8 @@ export async function fetchGeminiResponse(userQuery: string): Promise<string> {
       name: tool.name,
       description: tool.description,
       category: tool.category,
-      tags: tool.tags
+      tags: tool.tags,
+      keywords: toolKeywords[tool.name] || []
     }));
 
     const enhancedPrompt = `
@@ -21,8 +38,13 @@ ${JSON.stringify(toolsContext, null, 2)}
 사용자 입력: "${userQuery}"
 
 위 도구 목록 중에서 사용자의 요구사항과 가장 관련성 높은 도구를 선택하여 추천해주세요.
-예를 들어, 웹툰이나 그림 관련 요청에는 Midjourney, DALL-E, Stable Diffusion 등의 이미지 생성 도구를,
-글쓰기 관련 요청에는 ChatGPT, Claude 등의 텍스트 생성 도구를 추천해주세요.
+각 도구의 description, tags, keywords를 참고하여 사용자의 의도와 가장 잘 맞는 도구를 추천해주세요.
+
+예시:
+- "웹툰 그리고 싶어" → Midjourney, Leonardo AI (이미지 생성 도구)
+- "엑셀 작업" → Microsoft Copilot (오피스 도구)
+- "GPT" → ChatGPT (대화형 AI)
+- "영어 교정" → Grammarly (영어 교정 도구)
 
 다음 형식으로 답변해주세요:
 
@@ -70,8 +92,21 @@ ${JSON.stringify(toolsContext, null, 2)}
     // 추천된 도구가 실제 존재하는지 확인
     if (recommendedToolName) {
       const recommendedTool = allTools.find(
-        tool => tool.name.toLowerCase().includes(recommendedToolName.toLowerCase()) ||
-               recommendedToolName.toLowerCase().includes(tool.name.toLowerCase())
+        tool => {
+          const toolName = tool.name.toLowerCase();
+          const searchName = recommendedToolName.toLowerCase();
+          
+          // 도구명 직접 매칭
+          if (toolName.includes(searchName) || searchName.includes(toolName)) {
+            return true;
+          }
+          
+          // 키워드 매칭
+          const keywords = toolKeywords[tool.name] || [];
+          return keywords.some(keyword => 
+            userQuery.toLowerCase().includes(keyword.toLowerCase())
+          );
+        }
       );
 
       if (!recommendedTool) {
